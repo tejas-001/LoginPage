@@ -1,23 +1,42 @@
 import React from 'react'
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-export default function FormComponent() {
+import { getAll, signup, getByID, EditUser } from '../services/user.service';
+export default  function FormComponent() {
     // const key = sessionStorage.getItem('key')
-    if(sessionStorage.length!==0){
-    var data = JSON.parse(sessionStorage.getItem('d'))
+    // var data = {
+    //     firstName: '',
+    //     lastName: '',
+    //     age: '',
+    //     dob: '',
+    //     address: ''
+    // }
+   const id = sessionStorage.getItem('id')
+   const [data, setData] = useState([])
+   useEffect(()=>{
+       loadData(setData)
+   },[])
+   const loadData = async(func) => {
+    if(id!==null) { 
+        const d =  await getByID(id)
+        console.log(d[0].firstName)
+        func(d[0])
+        // sessionStorage.clear()
     }
-    else{
-        data = {
-            id: '',
-            firstName: '',
-            lastName: '',
-            age: '',
-            dob: '',
-            address: ''
+    else {
+        const d = {
+        firstName: '',
+        lastName: '',
+        age: '',
+        dob: '',
+        address: ''
         }
+        setData(d)
     }
+   }
+ 
     const navigate = useNavigate()
-   var state = {
+    var state = {
        id: '',
        firstName: '',
        lastName: '',
@@ -25,20 +44,39 @@ export default function FormComponent() {
        dob: '',
        address: ''
    }
+  console.log(data.firstName)
 
     const onSubmit = async() => {
-        state.id = document.getElementById('InputId').value;
+        // state.id = document.getElementById('InputId').value;
         state.firstName = document.getElementById('exampleInputFirstName1').value;
         state.lastName = document.getElementById('exampleInputLastName1').value;
         state.age = document.getElementById('age1').value;
         state.dob = document.getElementById('dob1').value;
         state.address = document.getElementById('address1').value;
-        localStorage.setItem(`${state.id}`,JSON.stringify({ id:`${state.id}`, firstName:`${state.firstName}`, lastName:`${state.lastName}`, age:`${state.age}`, dob:`${state.dob}`, address:`${state.address}`}))
+        if(id==null) {
+            const result = await signup(state.firstName, state.lastName, state.age, state.dob, state.address)
+            if(result != null) {
+                window.location.reload(false)
+            }
+            else {
+                alert('Invalid credentials')
+            }
+        }
+        // const id = sessionStorage.getItem('id')
+        if(id!=null) {
+            console.log(id)
+            await EditUser(id,state.firstName, state.lastName, state.age, state.dob, state.address)
+            sessionStorage.removeItem('id')
+            window.location.reload(false)
+        }
+        
+        // localStorage.setItem(`${state.id}`,JSON.stringify({ id:`${state.id}`, firstName:`${state.firstName}`, lastName:`${state.lastName}`, age:`${state.age}`, dob:`${state.dob}`, address:`${state.address}`}))
         // await sessionStorage.clear()
-        // await navigate('/')
-        window.location.reload(false)
+        
     }
-    useEffect(()=>{},[])
+    useEffect(()=>{
+        // sessionStorage.clear()
+    },[])
      
   return (
     <div className='form-div' style={{margin : 75 + `px`}} >
@@ -46,11 +84,11 @@ export default function FormComponent() {
                 Page 1
             </h1>
             <form >
-                <div className="mb-3">
+                {/* <div className="mb-3">
                     <label htmlFor="InputId" className="form-label">ID</label>
                     <input 
                    type="text" name='Id'className="form-control" id="InputId" defaultValue={data.id} aria-describedby="emailHelp" />
-                </div>
+                </div> */}
                 <div className="mb-3">
                     <label htmlFor="exampleInputFirstName1" className="form-label">First Name</label>
                     <input 

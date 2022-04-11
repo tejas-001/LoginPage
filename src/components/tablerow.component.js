@@ -1,28 +1,34 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'
+import { DeleteUser, getAll } from "../services/user.service";
 // import { onEdit } from '../pages/page1.page'
-export const RowComponent = (props) =>{
-    // const {id} = props
-    const keys = []
-    for(var i=0;i<localStorage.length; i++){
-        if(localStorage.key(i)!=null){
-            keys.push(localStorage.key(i))
-        }
-    }
-    const navigate = useNavigate()
-    console.log(keys)
-    const [id, setId] = useState('')
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [age, setAge] = useState('')
-    const [dob, setdob] = useState('')
-    const [address, setAddress] = useState('')
-    const obj = { id:`${id}`, firstName:`${firstName}`, lastName: `${lastName}`, age:`${age}`, dob:`${dob}`, address:`${address}`}
-    const stringedObj = JSON.stringify(obj)
-    sessionStorage.setItem('d',stringedObj)
-    // sessionStorage.setItem('key',id )
-    return(
-        <table class="table">
+export const RowComponent = (props) => {
+    const { result } = props
+    // const result =  getAll()
+    // console.log(result[0])
+      let l = result.length
+    //   console.log(result[0])
+    // let data = []
+    // for( let i=0;i<l;i++)
+    // {
+    //     data.push(result[i])
+    // }
+//    const onEdit = (id) => {
+//        console.log(id)
+//    }
+const navigate = useNavigate()
+
+const onDelete = async(i) => {
+    const result = await DeleteUser(i)
+    window.location.reload(false)
+}
+
+    
+    return (
+        <div>
+            <h3> Table Component </h3>
+            <table>
                 <thead>
                     <tr>
                     <th scope="col">ID</th>
@@ -35,40 +41,35 @@ export const RowComponent = (props) =>{
                     <th scope="col">Delete</th>
                     </tr>
                 </thead>
-               {keys.map(e => {
-                   const parsedObj = JSON.parse(localStorage.getItem(`${e}`))
-                   return <tbody>
-                   <tr>
-                   <td>{parsedObj.id}</td>
-                   <td>{parsedObj.firstName}</td>
-                   <td>{parsedObj.lastName}</td>
-                   <td>{parsedObj.age}</td>
-                   <td>{parsedObj.dob}</td>
-                   <td>{parsedObj.address}</td>
-
-                   <td><button onClick={async()=>{
-                       
-                    await setId(parsedObj.id);
-                    await setFirstName(parsedObj.firstName); 
-                    await setLastName(parsedObj.lastName);
-                    await setAge(parsedObj.age);
-                    await setdob(parsedObj.dob);
-                    await setAddress(parsedObj.address);
-                    // await navigate('/edit')
-                    window.location.reload(false)
-                    
-                }} type="submit" 
-                   class="btn btn-primary">Edit</button>
-                   </td>
-
-                   <td><button onClick={()=>{localStorage.removeItem(`${parsedObj.id}`); window.location.reload(false)}} type="danger" 
-                   class="btn btn-primary">Delete</button>
-                   </td>
-                   </tr>
-               </tbody>
-               }) 
+                {result.map((e)=>{
+                    return (
+                        <tbody>
+                            <tr>
+                                <td>{e.id}</td>
+                                <td>{e.firstName}</td>
+                                <td>{e.lastName}</td>
+                                <td>{e.age}</td>
+                                <td>{e.dob}</td>
+                                <td>{e.address}</td>
+                                <td><button onClick={()=>{
+                                    sessionStorage.setItem('id', e.id)
+                                    window.location.reload(false)
+                                }}>Edit</button></td>
+                                <td><button onClick={()=>{
+                                    onDelete(e.id)
+                                    
+                                }}>Delete</button></td>
+                            </tr>
+                        </tbody>
+                    )
+                })
+                
+                }
                
-               }
-            </table>     
+            </table>
+            {/* <button onClick={onEdit}> Edit </button> */}
+
+        </div>
     );
+
 }
