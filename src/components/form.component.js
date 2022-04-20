@@ -46,7 +46,7 @@ export default  function FormComponent() {
    }
   console.log(data.firstName)
 
-    const onSubmit = async() => {
+const onSubmit = async() => {
         // state.id = document.getElementById('InputId').value;
         state.firstName = document.getElementById('exampleInputFirstName1').value;
         state.lastName = document.getElementById('exampleInputLastName1').value;
@@ -66,7 +66,8 @@ export default  function FormComponent() {
         if(id!=null) {
             console.log(id)
             await EditUser(id,state.firstName, state.lastName, state.age, state.dob, state.address)
-            sessionStorage.removeItem('id')
+            await sessionStorage.removeItem('id')
+
             window.location.reload(false)
         }
         

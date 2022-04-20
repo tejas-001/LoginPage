@@ -4,19 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { DeleteUser, getAll } from "../services/user.service";
 // import { onEdit } from '../pages/page1.page'
 export const RowComponent = (props) => {
-    const { result } = props
-    // const result =  getAll()
-    // console.log(result[0])
-      let l = result.length
-    //   console.log(result[0])
-    // let data = []
-    // for( let i=0;i<l;i++)
-    // {
-    //     data.push(result[i])
-    // }
-//    const onEdit = (id) => {
-//        console.log(id)
-//    }
+    var { result } = props
+   
+    let l = result.length
+   
 const navigate = useNavigate()
 
 const onDelete = async(i) => {
@@ -27,8 +18,9 @@ const onDelete = async(i) => {
     
     return (
         <div>
-            <h3> Table Component </h3>
-            <table>
+            <h3> List of all Users </h3>
+            <br></br>
+            <table >
                 <thead>
                     <tr>
                     <th scope="col">ID</th>
@@ -54,11 +46,11 @@ const onDelete = async(i) => {
                                 <td><button onClick={()=>{
                                     sessionStorage.setItem('id', e.id)
                                     window.location.reload(false)
-                                }}>Edit</button></td>
+                                }} type="button" class="btn btn-info">Edit</button></td>
                                 <td><button onClick={()=>{
                                     onDelete(e.id)
                                     
-                                }}>Delete</button></td>
+                                }} type="button" class="btn btn-danger">Delete</button></td>
                             </tr>
                         </tbody>
                     )

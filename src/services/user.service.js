@@ -74,3 +74,18 @@ export const DeleteUser = async (id) => {
         console.log(ex)
     }
 }
+
+export const getSearch = async (search) => {
+    const url = settings.server + `/user/search/${search}`
+    console.log(`${search} form user service`)
+    let result
+    try {
+        result = await axios.get(url,{search})
+        console.log(result)
+        result = result.data
+    }
+    catch (ex) {
+        console.log(ex)
+    }
+    return result
+}
